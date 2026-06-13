@@ -47,9 +47,8 @@ export async function submitPurchaseOrder(
   const productIds = normalizedLines.map((line) => line.productId);
 
   const { data: products, error: productsError } = await supabase
-    .from("products")
-    .select("id, name, dealer_price, stock_quantity")
-    .eq("is_active", true)
+    .from("products_dealer_catalog")
+    .select("id, name, dealer_price")
     .in("id", productIds);
 
   if (productsError) {
@@ -72,12 +71,6 @@ export async function submitPurchaseOrder(
 
     if (!product?.dealer_price) {
       return { error: "One or more products are no longer available." };
-    }
-
-    if ((product.stock_quantity ?? 0) < line.quantity) {
-      return {
-        error: `${product.name ?? "A product"} is not available in the requested quantity.`,
-      };
     }
 
     orderLines.push({

@@ -2,17 +2,6 @@ import type { PurchaseOrderStatus } from "@/lib/database.types";
 
 export type StockTone = "in" | "low" | "out";
 
-export function dealerAvailability(inStock: boolean): {
-  label: string;
-  tone: StockTone;
-} {
-  if (inStock) {
-    return { label: "In stock", tone: "in" };
-  }
-
-  return { label: "Out of stock", tone: "out" };
-}
-
 export function stockIndicator(quantity: number): {
   label: string;
   tone: StockTone;

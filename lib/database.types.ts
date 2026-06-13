@@ -1274,7 +1274,6 @@ export type Database = {
           dealer_price: number | null
           description: string | null
           id: string | null
-          in_stock: boolean | null
           model: string | null
           name: string | null
           serial_number: string | null
@@ -1286,7 +1285,6 @@ export type Database = {
           dealer_price?: number | null
           description?: string | null
           id?: string | null
-          in_stock?: boolean | null
           model?: string | null
           name?: string | null
           serial_number?: string | null
@@ -1298,7 +1296,6 @@ export type Database = {
           dealer_price?: number | null
           description?: string | null
           id?: string | null
-          in_stock?: boolean | null
           model?: string | null
           name?: string | null
           serial_number?: string | null
