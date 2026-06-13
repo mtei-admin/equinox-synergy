@@ -84,53 +84,41 @@ export async function createProduct(
   }
 }
 
-export async function updateProduct(formData: FormData) {
+export async function adjustProductStock(
+  _prev: InventoryActionState,
+  formData: FormData,
+): Promise<InventoryActionState> {
   await requireRole("employee");
 
   const id = String(formData.get("id") ?? "");
   if (!id) {
-    return;
+    return { error: "Product not found." };
   }
 
   try {
-    const name = String(formData.get("name") ?? "").trim();
-    const model = String(formData.get("model") ?? "").trim() || null;
-    const serialNumber =
-      String(formData.get("serial_number") ?? "").trim() || null;
-    const supplierCost = parseNumber(formData.get("supplier_cost"), "Supplier cost");
-    const dealerPrice = parseNumber(formData.get("dealer_price"), "Dealer price");
     const stockQuantity = parseNumber(
       formData.get("stock_quantity"),
       "Stock quantity",
     );
+    const notes =
+      String(formData.get("notes") ?? "").trim() ||
+      "Manual stock adjustment from inventory admin";
 
     const supabase = await createClient();
-    const { error } = await supabase
-      .from("products")
-      .update({
-        name,
-        model,
-        serial_number: serialNumber,
-        supplier_cost: supplierCost,
-        dealer_price: dealerPrice,
-      })
-      .eq("id", id);
-
-    if (error) {
-      console.error("updateProduct", error);
-      return;
-    }
-
     await recordStockAdjustment(
       supabase,
       id,
       Math.floor(stockQuantity),
-      "Manual stock adjustment from inventory admin",
+      notes,
     );
 
     revalidateInventoryPaths();
+    return { success: "Stock quantity updated." };
   } catch (error) {
-    console.error("updateProduct", error);
+    return {
+      error:
+        error instanceof Error ? error.message : "Unable to adjust stock.",
+    };
   }
 }
 
