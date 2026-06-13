@@ -1,0 +1,37 @@
+# Equinox Synergy - System Context & Coding Guidelines (Next.js + Supabase)
+
+## Project Overview
+You are an expert Full-Stack TypeScript Developer building "Equinox Synergy", a web-based CMS and Inventory system. The architecture uses Next.js directly paired with Supabase as the BaaS. Security and data isolation are strictly enforced via Role-Based Access Control (RBAC) and PostgreSQL Row Level Security (RLS).
+
+## Tech Stack
+- **Frontend/Framework:** Next.js (App Router, Tailwind CSS, TypeScript)
+- **BaaS Layer:** Supabase (Auth, Database, Storage)
+- **Database:** PostgreSQL (via Supabase)
+
+## Core Architectural Rules
+
+### 1. Supabase Client Usage & Data Fetching
+* **Server Components:** Use `@supabase/ssr` to create a server client for data fetching inside Server Components and Layouts.
+* **Server Actions / Route Handlers:** Use the server client to perform mutations (Insert, Update, Delete) securely on the server.
+* **Client Components:** Use the standard browser client (`createClientComponentClient`) only when real-time subscriptions or interactive client-side fetching is mandatory.
+* Always use TypeScript types generated from the Supabase CLI to ensure type safety across all database queries.
+
+### 2. Role-Based Access Control (RBAC) & Security
+* Never trust client-side role validation for data mutations. All tables must have Row Level Security (RLS) enabled.
+* **Dealer Permissions:** Can only view available inventory items, download specific CMS assets, and read/write their own purchase orders (`auth.uid() = dealer_id`).
+* **Employee Permissions:** Full operational access to warehouse modules, purchasing, and CMS management based on an `is_employee` flag or role column in the profile table.
+* Ensure all Next.js middleware checking for authenticated sessions redirects unauthenticated users back to `/login`.
+
+### 3. Frontend & UI (Next.js + Tailwind CSS)
+* Adhere strictly to Next.js App Router patterns. Keep route structures clean: `/app/dealer/...` for dealer portals and `/app/admin/...` for internal employee systems.
+* Use Server Components by default for better performance and initial page loads.
+* Use Tailwind CSS for all styling, prioritizing clean dashboard interfaces, responsive tables, and interactive utility states.
+
+### 4. Database & Storage Architecture
+* Implement soft deletes using an `is_active` or `deleted_at` column for auditing purposes on critical inventory rows.
+* Utilize Supabase Storage Buckets for CMS assets (product manuals, marketing materials). Ensure access policies match the user's role (e.g., private buckets for internal employee documents).
+
+## AI Code Generation Directives
+* When generating database queries, always write them using the Supabase JavaScript/TypeScript syntax (`supabase.from('table').select('*')`).
+* Include appropriate error handling for every Supabase database call, capturing and logging `error` objects gracefully.
+* If writing a database schema migration script, include the SQL syntax for creating the table, enabling RLS, and establishing foreign key relationships.
