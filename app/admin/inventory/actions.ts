@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireRole } from "@/lib/auth/session";
+import { recordInitialStock, recordStockAdjustment } from "@/lib/inventory/ledger";
 import { createClient } from "@/lib/supabase/server";
 
 export type InventoryActionState = {
@@ -34,6 +35,9 @@ export async function createProduct(
 
   const sku = String(formData.get("sku") ?? "").trim();
   const name = String(formData.get("name") ?? "").trim();
+  const model = String(formData.get("model") ?? "").trim() || null;
+  const serialNumber =
+    String(formData.get("serial_number") ?? "").trim() || null;
   const description = String(formData.get("description") ?? "").trim() || null;
 
   if (!sku || !name) {
@@ -49,19 +53,27 @@ export async function createProduct(
     );
 
     const supabase = await createClient();
-    const { error } = await supabase.from("products").insert({
-      sku,
-      name,
-      description,
-      supplier_cost: supplierCost,
-      dealer_price: dealerPrice,
-      stock_quantity: Math.floor(stockQuantity),
-    });
+    const { data: product, error } = await supabase
+      .from("products")
+      .insert({
+        sku,
+        name,
+        model,
+        serial_number: serialNumber,
+        description,
+        supplier_cost: supplierCost,
+        dealer_price: dealerPrice,
+        stock_quantity: 0,
+      })
+      .select("id")
+      .single();
 
-    if (error) {
+    if (error || !product) {
       console.error("createProduct", error);
-      return { error: error.message };
+      return { error: error?.message ?? "Unable to create product." };
     }
+
+    await recordInitialStock(supabase, product.id, Math.floor(stockQuantity));
 
     revalidateInventoryPaths();
     return { success: `Product ${sku} created.` };
@@ -82,6 +94,9 @@ export async function updateProduct(formData: FormData) {
 
   try {
     const name = String(formData.get("name") ?? "").trim();
+    const model = String(formData.get("model") ?? "").trim() || null;
+    const serialNumber =
+      String(formData.get("serial_number") ?? "").trim() || null;
     const supplierCost = parseNumber(formData.get("supplier_cost"), "Supplier cost");
     const dealerPrice = parseNumber(formData.get("dealer_price"), "Dealer price");
     const stockQuantity = parseNumber(
@@ -94,9 +109,10 @@ export async function updateProduct(formData: FormData) {
       .from("products")
       .update({
         name,
+        model,
+        serial_number: serialNumber,
         supplier_cost: supplierCost,
         dealer_price: dealerPrice,
-        stock_quantity: Math.floor(stockQuantity),
       })
       .eq("id", id);
 
@@ -104,6 +120,13 @@ export async function updateProduct(formData: FormData) {
       console.error("updateProduct", error);
       return;
     }
+
+    await recordStockAdjustment(
+      supabase,
+      id,
+      Math.floor(stockQuantity),
+      "Manual stock adjustment from inventory admin",
+    );
 
     revalidateInventoryPaths();
   } catch (error) {

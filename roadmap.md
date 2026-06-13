@@ -105,3 +105,24 @@ Deploy Equinox Synergy to Vercel with production Supabase configuration, auth re
 - [x] **Task 8.3: Deployment Guide** Document Vercel env vars, Supabase Auth URLs, migration push, and post-deploy checks in `DEPLOYMENT.md`.
 - [x] **Task 8.4: Database Deploy Script** Add `npm run db:push` for applying migrations to the linked remote project.
 - [x] **Task 8.5: Initial Vercel Deploy** Production alias live at `https://equinox-synergy.vercel.app` (env vars must be set in Vercel dashboard).
+
+---
+
+## Phase 9: WMS Process Flow (Inbound & Outbound)
+
+### Objective
+Implement the full purchasing and delivery workflow from the operations diagram: supplier procurement through goods receipt, and dealer sales orders through invoice, DR, picking, dispatch, and POD. Introduce an inventory ledger so stock movements are event-driven.
+
+**Schema reference:** `docs/PHASE9_SCHEMA.md`  
+**Migration:** `supabase/migrations/20250618000000_phase9_wms_flow_schema.sql`
+
+- [x] **Task 9.1: Inventory Ledger** `inventory_transactions` table, stock sync trigger, opening-balance backfill; migrate admin stock edits to ledger writes.
+- [x] **Task 9.2: Suppliers & Purchase Requests** Supplier master, PR workflow (draft → approved), PR line items.
+- [x] **Task 9.3: Supplier Purchase Orders** Convert approved PRs to `supplier_purchase_orders`; track expected delivery dates.
+- [x] **Task 9.4: Inbound Logistics & Receiving** `inbound_shipments`, `goods_receipts`, receive lines, `post_goods_receipt()` posting.
+- [x] **Task 9.5: Receipt Exceptions** NG path via `receipt_exceptions` (damage, short ship, returns/claims).
+- [x] **Task 9.6: Outbound Documents** `sales_invoices` and `delivery_receipts` linked to dealer `purchase_orders`.
+- [x] **Task 9.7: Picking & Shipping** `pick_lists`, `post_pick_list()`, `outbound_shipments`, trucking fields.
+- [x] **Task 9.8: Proof of Delivery** `proof_of_deliveries` with sign-off; auto-complete dealer order on POD.
+- [ ] **Task 9.9: Serial Unit Tracking** `inventory_units` at receipt; assign units during pick for serialized products.
+- [x] **Task 9.10: Admin UI Pipelines** `/admin/purchasing`, `/admin/fulfillment`, and `/admin/orders/[id]` workflow screens.

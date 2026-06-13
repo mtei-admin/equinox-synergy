@@ -30,6 +30,8 @@ export function ProductTable({ products }: ProductTableProps) {
             <tr>
               <th className="px-4 py-3 text-left font-medium text-zinc-400">SKU</th>
               <th className="px-4 py-3 text-left font-medium text-zinc-400">Product</th>
+              <th className="px-4 py-3 text-left font-medium text-zinc-400">Model</th>
+              <th className="px-4 py-3 text-left font-medium text-zinc-400">Serial #</th>
               <th className="px-4 py-3 text-right font-medium text-zinc-400">Cost</th>
               <th className="px-4 py-3 text-right font-medium text-zinc-400">Dealer</th>
               <th className="px-4 py-3 text-right font-medium text-zinc-400">Stock</th>
@@ -54,6 +56,22 @@ export function ProductTable({ products }: ProductTableProps) {
                       name="name"
                       defaultValue={product.name}
                       className="w-full min-w-36 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1.5 text-white"
+                    />
+                  </td>
+                  <td className="px-4 py-4">
+                    <input
+                      form={formId}
+                      name="model"
+                      defaultValue={product.model ?? ""}
+                      className="w-full min-w-28 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1.5 text-white"
+                    />
+                  </td>
+                  <td className="px-4 py-4">
+                    <input
+                      form={formId}
+                      name="serial_number"
+                      defaultValue={product.serial_number ?? ""}
+                      className="w-full min-w-28 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1.5 font-mono text-xs text-white"
                     />
                   </td>
                   <td className="px-4 py-4 text-right">

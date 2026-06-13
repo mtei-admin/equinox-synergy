@@ -170,6 +170,8 @@ WHERE id = '11111111-1111-1111-1111-111111111102';
 INSERT INTO public.products (
   sku,
   name,
+  model,
+  serial_number,
   description,
   supplier_cost,
   dealer_price,
@@ -179,6 +181,8 @@ VALUES
   (
     'EQX-1001',
     'Trail Cam Pro 4K',
+    'TC-4K-PRO',
+    'SN-TC4K-001',
     'Weatherproof trail camera with 4K video and 120-day battery life.',
     89.00,
     149.99,
@@ -187,6 +191,8 @@ VALUES
   (
     'EQX-1002',
     'Summit Binocular 10x42',
+    'SB-10X42',
+    'SN-SB10-002',
     'Lightweight roof-prism binoculars for field scouting.',
     62.00,
     109.99,
@@ -195,6 +201,8 @@ VALUES
   (
     'EQX-1003',
     'Ridge Backpack 45L',
+    'RB-45L',
+    'SN-RB45-003',
     'Modular hunting pack with hydration sleeve and rifle carry.',
     74.50,
     129.99,
@@ -203,6 +211,8 @@ VALUES
   (
     'EQX-1004',
     'NightScope IR Illuminator',
+    'NS-IR-LR',
+    'SN-NSIR-004',
     'Long-range IR illuminator compatible with Equinox optics.',
     41.25,
     79.99,
@@ -211,6 +221,8 @@ VALUES
   (
     'EQX-1005',
     'Base Camp Field Kit',
+    'BC-FK-STD',
+    'SN-BCFK-005',
     'Starter kit with cleaning tools, straps, and maintenance oils.',
     18.00,
     34.99,
@@ -219,12 +231,36 @@ VALUES
   (
     'EQX-1006',
     'Pro Tripod Carbon',
+    'PT-CF-12',
+    'SN-PTCF-006',
     'Carbon fiber tripod rated for spotting scopes up to 12 lbs.',
     95.00,
     169.99,
     15
   )
 ON CONFLICT (sku) DO NOTHING;
+
+-- Opening inventory ledger balances (Phase 9)
+INSERT INTO public.inventory_transactions (
+  product_id,
+  txn_type,
+  quantity_delta,
+  reference_type,
+  notes
+)
+SELECT
+  p.id,
+  'adjust',
+  p.stock_quantity,
+  'manual_adjustment',
+  'Seed opening balance'
+FROM public.products p
+WHERE p.stock_quantity > 0
+  AND NOT EXISTS (
+    SELECT 1
+    FROM public.inventory_transactions it
+    WHERE it.product_id = p.id
+  );
 
 -- ---------------------------------------------------------------------------
 -- Sample announcements

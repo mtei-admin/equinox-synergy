@@ -7,7 +7,6 @@ import {
   type SubmitOrderState,
 } from "@/app/dealer/inventory/actions";
 import { formatCurrency } from "@/lib/format/display";
-import { stockIndicator } from "@/lib/orders/helpers";
 import type { DealerProduct } from "@/lib/database.types";
 
 const initialState: SubmitOrderState = {};
@@ -90,10 +89,13 @@ export function InventoryCatalog({ products }: InventoryCatalogProps) {
                   SKU
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-zinc-600">
-                  Price
+                  Model
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-zinc-600">
-                  Availability
+                  Serial #
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-zinc-600">
+                  Price
                 </th>
                 <th className="px-4 py-3 text-right font-medium text-zinc-600">
                   Qty
@@ -102,9 +104,7 @@ export function InventoryCatalog({ products }: InventoryCatalogProps) {
             </thead>
             <tbody className="divide-y divide-zinc-100">
               {products.map((product) => {
-                const stock = stockIndicator(product.stock_quantity ?? 0);
                 const inCart = cart[product.id!] ?? 0;
-                const outOfStock = (product.stock_quantity ?? 0) <= 0;
 
                 return (
                   <tr key={product.id}>
@@ -119,37 +119,28 @@ export function InventoryCatalog({ products }: InventoryCatalogProps) {
                     <td className="px-4 py-4 font-mono text-xs text-zinc-600">
                       {product.sku}
                     </td>
+                    <td className="px-4 py-4 text-sm text-zinc-700">
+                      {product.model ?? "—"}
+                    </td>
+                    <td className="px-4 py-4 font-mono text-xs text-zinc-600">
+                      {product.serial_number ?? "—"}
+                    </td>
                     <td className="px-4 py-4 font-medium text-zinc-900">
                       {formatCurrency(product.dealer_price ?? 0)}
-                    </td>
-                    <td className="px-4 py-4">
-                      <span
-                        className={
-                          stock.tone === "in"
-                            ? "text-emerald-700"
-                            : stock.tone === "low"
-                              ? "text-amber-700"
-                              : "text-red-700"
-                        }
-                      >
-                        {stock.label}
-                      </span>
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex items-center justify-end gap-2">
                         <input
                           type="number"
                           min={0}
-                          max={product.stock_quantity ?? 0}
                           value={inCart}
-                          disabled={outOfStock}
                           onChange={(event) =>
                             setQuantity(
                               product.id!,
                               Number(event.target.value),
                             )
                           }
-                          className="w-20 rounded-lg border border-zinc-300 px-2 py-1.5 text-right disabled:cursor-not-allowed disabled:bg-zinc-100"
+                          className="w-20 rounded-lg border border-zinc-300 px-2 py-1.5 text-right"
                         />
                       </div>
                     </td>

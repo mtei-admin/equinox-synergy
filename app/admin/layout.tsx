@@ -6,7 +6,9 @@ import { SignOutButton } from "@/components/auth/sign-out-button";
 const navItems = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/inventory", label: "Inventory" },
+  { href: "/admin/purchasing", label: "Purchasing" },
   { href: "/admin/orders", label: "Orders" },
+  { href: "/admin/fulfillment", label: "Fulfillment" },
   { href: "/admin/cms", label: "CMS" },
   { href: "/admin/dealers", label: "Dealers" },
 ];

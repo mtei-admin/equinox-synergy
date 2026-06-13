@@ -28,7 +28,7 @@ export default async function DealerOrderDetailPage({
 
   const { data: lineItems, error: itemsError } = await supabase
     .from("order_items")
-    .select("id, quantity, unit_price, products(name, sku)")
+    .select("id, quantity, unit_price, products(name, sku, model, serial_number)")
     .eq("purchase_order_id", id)
     .order("created_at");
 
@@ -70,6 +70,12 @@ export default async function DealerOrderDetailPage({
                 <th className="px-4 py-3 text-left font-medium text-zinc-600">
                   SKU
                 </th>
+                <th className="px-4 py-3 text-left font-medium text-zinc-600">
+                  Model
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-zinc-600">
+                  Serial #
+                </th>
                 <th className="px-4 py-3 text-right font-medium text-zinc-600">
                   Qty
                 </th>
@@ -89,6 +95,12 @@ export default async function DealerOrderDetailPage({
                   </td>
                   <td className="px-4 py-4 font-mono text-xs text-zinc-600">
                     {item.products?.sku ?? "—"}
+                  </td>
+                  <td className="px-4 py-4 text-sm text-zinc-700">
+                    {item.products?.model ?? "—"}
+                  </td>
+                  <td className="px-4 py-4 font-mono text-xs text-zinc-600">
+                    {item.products?.serial_number ?? "—"}
                   </td>
                   <td className="px-4 py-4 text-right text-zinc-900">
                     {item.quantity}

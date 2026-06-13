@@ -78,6 +78,9 @@ export default async function AdminOrdersPage() {
                 <th className="px-4 py-3 text-left font-medium text-zinc-400">
                   Update
                 </th>
+                <th className="px-4 py-3 text-left font-medium text-zinc-400">
+                  Fulfillment
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800">
@@ -123,6 +126,14 @@ export default async function AdminOrdersPage() {
                         Save
                       </button>
                     </form>
+                  </td>
+                  <td className="px-4 py-4">
+                    <Link
+                      href={`/admin/orders/${order.id}`}
+                      className="text-sm font-medium text-zinc-300 underline hover:text-white"
+                    >
+                      Workflow
+                    </Link>
                   </td>
                 </tr>
               ))}

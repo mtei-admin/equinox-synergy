@@ -28,6 +28,8 @@ const SEED_PRODUCTS = [
   {
     sku: "EQX-1001",
     name: "Trail Cam Pro 4K",
+    model: "TC-4K-PRO",
+    serial_number: "SN-TC4K-001",
     description:
       "Weatherproof trail camera with 4K video and 120-day battery life.",
     supplier_cost: 89,
@@ -37,6 +39,8 @@ const SEED_PRODUCTS = [
   {
     sku: "EQX-1002",
     name: "Summit Binocular 10x42",
+    model: "SB-10X42",
+    serial_number: "SN-SB10-002",
     description: "Lightweight roof-prism binoculars for field scouting.",
     supplier_cost: 62,
     dealer_price: 109.99,
@@ -45,6 +49,8 @@ const SEED_PRODUCTS = [
   {
     sku: "EQX-1003",
     name: "Ridge Backpack 45L",
+    model: "RB-45L",
+    serial_number: "SN-RB45-003",
     description:
       "Modular hunting pack with hydration sleeve and rifle carry.",
     supplier_cost: 74.5,
@@ -54,6 +60,8 @@ const SEED_PRODUCTS = [
   {
     sku: "EQX-1004",
     name: "NightScope IR Illuminator",
+    model: "NS-IR-LR",
+    serial_number: "SN-NSIR-004",
     description:
       "Long-range IR illuminator compatible with Equinox optics.",
     supplier_cost: 41.25,
@@ -63,6 +71,8 @@ const SEED_PRODUCTS = [
   {
     sku: "EQX-1005",
     name: "Base Camp Field Kit",
+    model: "BC-FK-STD",
+    serial_number: "SN-BCFK-005",
     description:
       "Starter kit with cleaning tools, straps, and maintenance oils.",
     supplier_cost: 18,
@@ -72,6 +82,8 @@ const SEED_PRODUCTS = [
   {
     sku: "EQX-1006",
     name: "Pro Tripod Carbon",
+    model: "PT-CF-12",
+    serial_number: "SN-PTCF-006",
     description: "Carbon fiber tripod rated for spotting scopes up to 12 lbs.",
     supplier_cost: 95,
     dealer_price: 169.99,
@@ -174,6 +186,8 @@ async function main() {
       {
         sku: product.sku,
         name: product.name,
+        model: product.model,
+        serial_number: product.serial_number,
         description: product.description,
         supplier_cost: product.supplier_cost,
         dealer_price: product.dealer_price,
