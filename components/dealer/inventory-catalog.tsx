@@ -7,6 +7,7 @@ import {
   type SubmitOrderState,
 } from "@/app/dealer/inventory/actions";
 import { formatCurrency } from "@/lib/format/display";
+import { dealerAvailability } from "@/lib/orders/helpers";
 import type { DealerProduct } from "@/lib/database.types";
 
 const initialState: SubmitOrderState = {};
@@ -97,6 +98,9 @@ export function InventoryCatalog({ products }: InventoryCatalogProps) {
                 <th className="px-4 py-3 text-left font-medium text-zinc-600">
                   Price
                 </th>
+                <th className="px-4 py-3 text-left font-medium text-zinc-600">
+                  Availability
+                </th>
                 <th className="px-4 py-3 text-right font-medium text-zinc-600">
                   Qty
                 </th>
@@ -105,9 +109,14 @@ export function InventoryCatalog({ products }: InventoryCatalogProps) {
             <tbody className="divide-y divide-zinc-100">
               {products.map((product) => {
                 const inCart = cart[product.id!] ?? 0;
+                const availability = dealerAvailability(product.in_stock ?? false);
+                const outOfStock = !product.in_stock;
 
                 return (
-                  <tr key={product.id}>
+                  <tr
+                    key={product.id}
+                    className={outOfStock ? "bg-zinc-50/80" : undefined}
+                  >
                     <td className="px-4 py-4">
                       <p className="font-medium text-zinc-900">{product.name}</p>
                       {product.description ? (
@@ -129,18 +138,30 @@ export function InventoryCatalog({ products }: InventoryCatalogProps) {
                       {formatCurrency(product.dealer_price ?? 0)}
                     </td>
                     <td className="px-4 py-4">
+                      <span
+                        className={
+                          availability.tone === "in"
+                            ? "text-emerald-700"
+                            : "text-red-700"
+                        }
+                      >
+                        {availability.label}
+                      </span>
+                    </td>
+                    <td className="px-4 py-4">
                       <div className="flex items-center justify-end gap-2">
                         <input
                           type="number"
                           min={0}
                           value={inCart}
+                          disabled={outOfStock}
                           onChange={(event) =>
                             setQuantity(
                               product.id!,
                               Number(event.target.value),
                             )
                           }
-                          className="w-20 rounded-lg border border-zinc-300 px-2 py-1.5 text-right"
+                          className="w-20 rounded-lg border border-zinc-300 px-2 py-1.5 text-right disabled:cursor-not-allowed disabled:bg-zinc-100"
                         />
                       </div>
                     </td>

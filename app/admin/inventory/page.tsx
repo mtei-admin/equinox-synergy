@@ -72,7 +72,7 @@ export default async function AdminInventoryPage() {
             {stats.outOfStockCount}
           </p>
           <p className="mt-1 text-xs text-red-200/80">
-            Hidden from dealer ordering until restocked
+            Shown to dealers as out of stock; ordering disabled until restocked
           </p>
         </div>
       </div>
