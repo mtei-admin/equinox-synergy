@@ -5,7 +5,6 @@ import {
   createSupplierPurchaseOrder,
   postGoodsReceipt,
 } from "@/app/admin/purchasing/actions";
-import { SupplierCreateForm } from "@/components/admin/purchasing/supplier-create-form";
 import {
   GOODS_RECEIPT_STATUS_LABELS,
   PURCHASE_REQUEST_STATUS_LABELS,
@@ -55,8 +54,6 @@ export default async function AdminPurchasingPage() {
           inventory posting.
         </p>
       </div>
-
-      <SupplierCreateForm />
 
       <section className="space-y-4 rounded-xl border border-zinc-800 bg-zinc-900 p-5">
         <h2 className="text-lg font-semibold text-white">Purchase request</h2>

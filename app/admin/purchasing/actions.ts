@@ -11,6 +11,7 @@ export type PurchasingActionState = {
 
 function revalidatePurchasing() {
   revalidatePath("/admin/purchasing");
+  revalidatePath("/admin/suppliers");
   revalidatePath("/admin/inventory");
   revalidatePath("/admin");
 }
@@ -34,37 +35,6 @@ function parsePositiveInt(value: FormDataEntryValue | null, label: string) {
     throw new Error(`${label} must be a positive number.`);
   }
   return Math.floor(parsed);
-}
-
-export async function createSupplier(
-  _prev: PurchasingActionState,
-  formData: FormData,
-): Promise<PurchasingActionState> {
-  const session = await requireRole("employee");
-
-  const code = String(formData.get("code") ?? "").trim().toUpperCase();
-  const name = String(formData.get("name") ?? "").trim();
-
-  if (!code || !name) {
-    return { error: "Supplier code and name are required." };
-  }
-
-  const supabase = await createClient();
-  const { error } = await supabase.from("suppliers").insert({
-    code,
-    name,
-    contact_name: String(formData.get("contact_name") ?? "").trim() || null,
-    contact_email: String(formData.get("contact_email") ?? "").trim() || null,
-    contact_phone: String(formData.get("contact_phone") ?? "").trim() || null,
-  });
-
-  if (error) {
-    console.error("createSupplier", error);
-    return { error: error.message };
-  }
-
-  revalidatePurchasing();
-  return { success: `Supplier ${code} added.` };
 }
 
 export async function submitPurchaseRequest(formData: FormData): Promise<void> {

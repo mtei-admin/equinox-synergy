@@ -3,10 +3,10 @@
 import { useActionState } from "react";
 import {
   createSupplier,
-  type PurchasingActionState,
-} from "@/app/admin/purchasing/actions";
+  type SupplierActionState,
+} from "@/app/admin/suppliers/actions";
 
-const initialState: PurchasingActionState = {};
+const initialState: SupplierActionState = {};
 
 export function SupplierCreateForm() {
   const [state, formAction, isPending] = useActionState(
@@ -22,7 +22,7 @@ export function SupplierCreateForm() {
       <div>
         <h2 className="text-lg font-semibold text-white">Add supplier</h2>
         <p className="mt-1 text-sm text-zinc-400">
-          Vendor master for inbound purchase orders.
+          Vendor master used for inbound purchase orders.
         </p>
       </div>
 
@@ -43,6 +43,7 @@ export function SupplierCreateForm() {
         <Field label="Contact name" name="contact_name" />
         <Field label="Email" name="contact_email" type="email" />
         <Field label="Phone" name="contact_phone" />
+        <Field label="Address" name="address" className="sm:col-span-2 lg:col-span-3" />
       </div>
 
       <button
@@ -62,15 +63,17 @@ function Field({
   type = "text",
   required,
   placeholder,
+  className = "",
 }: {
   label: string;
   name: string;
   type?: string;
   required?: boolean;
   placeholder?: string;
+  className?: string;
 }) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className={`flex flex-col gap-2 ${className}`}>
       <label htmlFor={name} className="text-sm font-medium text-zinc-300">
         {label}
       </label>
